@@ -1,0 +1,51 @@
+<html>
+
+<head>
+  <!-- <script src="menu.js"></script> -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <script>
+      window.onload = function() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://pokeapi.co/api/v2/pokemon/?limit=151', true);
+
+        xhr.timeout = 15000;
+        xhr.ontimeout = function() {
+          console.log('Время вышло');
+        }
+        xhr.send();
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === XMLHttpRequest.DONE) {
+            if(xhr.status === 200) {
+              var list = JSON.parse(xhr.responseText);
+              var divPokemonWrap = document.createElement('div');
+	          var pokemonImages = [];
+              for(var i = 0; i < list.results.length; i++) {
+                var divPokemon = document.createElement('div');
+                divPokemon.textContent = list.results[i].name;
+                divPokemonWrap.appendChild(divPokemon);
+                var pokemon = divPokemonWrap.lastChild;
+				pokemon.className = 'pokemonItem';
+				pokemon.id = i;
+				pokemonImages[i] = 'sprites/'+(i+1)+'.png';
+				pokemon.innerHTML = `<p><img src=${pokemonImages[i]}></p><p>${list.results[i].name}</p>`;  
+
+              }              
+              document.getElementById('result').appendChild(divPokemonWrap);
+              var pokemonWrapStyle = document.getElementById('result').lastChild.style;
+              pokemonWrapStyle.display = 'flex';
+              pokemonWrapStyle.justifyContent  = 'center';
+              pokemonWrapStyle.flexWrap = 'wrap';
+
+            }
+          }
+        }
+      }
+    </script>
+</head>
+
+<body>
+  <div id="result">
+  </div>
+</body>
+
+</html>
